@@ -1,0 +1,13 @@
+{
+  "name": "@control-de-caja/domain",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}

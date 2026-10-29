@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+.env
+*.log
+*.keystore
+apps/mobile/android/.gradle/
+apps/mobile/android/local.properties
