@@ -1,27 +1,12 @@
-export type UserRole = 'admin' | 'cashier' | 'auditor';
-
-export interface User {
-  id: string;
-  name: string;
-  role: UserRole;
-}
-
-export interface CashSession {
-  id: string;
-  userId: string;
-  openedAt: string;
-  closedAt?: string;
-  openingAmountCents: number;
-}
-
-export interface Movement {
-  id: string;
-  sessionId: string;
-  type: string;
-  direction: 'in' | 'out';
-  amountCents: number;
-  note?: string;
-  createdAt: string;
-}
-
-export type SyncStatus = 'pending' | 'syncing' | 'synced' | 'error' | 'rejected';
+export * from './role';
+export * from './action';
+export * from './user';
+export * from './register';
+export * from './cash-session';
+export * from './movement';
+export * from './movement-type';
+export * from './direction';
+export * from './sync-status';
+export * from './outbox-entry';
+export * from './audit-entry';
+export * from './field-key';

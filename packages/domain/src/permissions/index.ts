@@ -1,11 +1,11 @@
-import type { UserRole } from '../types';
+import type { Role } from '../types';
 
-export const permissions: Record<UserRole, readonly string[]> = {
-  admin: ['cash.open', 'cash.close', 'movement.create', 'movement.review', 'sync.manage'],
-  cashier: ['cash.open', 'cash.close', 'movement.create'],
-  auditor: ['movement.review'],
+export const permissions: Record<Role, readonly string[]> = {
+  cashier: ['session.open', 'session.close', 'session.viewOwn', 'movement.create', 'movement.reverse', 'sync.viewOwn', 'sync.retry'],
+  supervisor: ['session.open', 'session.close', 'session.viewOwn', 'session.viewAll', 'movement.create', 'movement.reverse', 'sync.viewOwn', 'sync.viewAll', 'sync.retry', 'audit.view', 'export.run', 'settings.manage'],
+  accountant: ['session.viewAll', 'sync.viewAll', 'audit.view', 'export.run'],
 };
 
-export function can(role: UserRole, action: string): boolean {
+export function can(role: Role, action: string): boolean {
   return permissions[role].includes(action);
 }

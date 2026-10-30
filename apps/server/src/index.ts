@@ -1,15 +1,18 @@
 import Fastify from 'fastify';
+import cors from '@fastify/cors';
+import { host, port } from './config';
+import { registerHealthRoute } from './routes/health';
 
-const server = Fastify({ logger: true });
+export function buildServer() {
+  const server = Fastify({ logger: true });
+  server.register(cors, { origin: true });
+  registerHealthRoute(server);
+  return server;
+}
 
-server.get('/health', async () => ({ status: 'ok' }));
-
-server.post('/auth', async () => ({ token: 'demo-token', user: { id: 'demo', name: 'Usuario demo', role: 'cashier' } }));
-
-server.post('/sync', async () => ({ accepted: [], rejected: [] }));
-
-const port = Number(process.env.PORT ?? 3000);
-server.listen({ host: '0.0.0.0', port }).catch((error) => {
-  server.log.error(error);
-  process.exit(1);
-});
+if (require.main === module) {
+  buildServer().listen({ host, port }).catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}

@@ -1,0 +1,4 @@
+export const DEFAULT_CURRENCY = 'CUP';
+export const DENOMINATIONS = [50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100] as const;
+export const DESCRIPTION_MIN_LENGTH = 3;
+export const DESCRIPTION_MAX_LENGTH = 140;
