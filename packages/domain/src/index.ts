@@ -4,5 +4,7 @@ export * from './result';
 export * from './errors';
 export * from './config';
 export * from './movement-types';
+export * from './permissions';
+export * from './rules';
 export { success, failure } from './result';
 export * from './seed';

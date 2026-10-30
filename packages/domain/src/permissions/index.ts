@@ -1,4 +1,4 @@
-import type { Role } from '../types';
+import type { MovementType, Register, Role, User } from '../types';
 
 export const permissions: Record<Role, readonly string[]> = {
   cashier: ['session.open', 'session.close', 'session.viewOwn', 'movement.create', 'movement.reverse', 'sync.viewOwn', 'sync.retry'],
@@ -8,4 +8,13 @@ export const permissions: Record<Role, readonly string[]> = {
 
 export function can(role: Role, action: string): boolean {
   return permissions[role].includes(action);
+}
+
+export function canCreateMovementType(role: Role, type: MovementType): boolean {
+  if (type === 'salary_payment') return role === 'supervisor';
+  return role === 'cashier' || role === 'supervisor';
+}
+
+export function canRegisterMovement(user: User, register: Register): boolean {
+  return user.role !== 'accountant' && user.registerId === register.id;
 }
