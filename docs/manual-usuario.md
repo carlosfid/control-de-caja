@@ -17,3 +17,7 @@ La aplicación de demostración incluye tres usuarios:
 Los PIN son datos de demostración documentados y se deben reemplazar antes de usar la aplicación en producción. Tras cinco PIN incorrectos, el acceso queda bloqueado durante 60 segundos.
 
 Las pantallas muestran únicamente las acciones autorizadas para el rol del usuario activo. Contabilidad tiene acceso de consulta; el vendedor opera su propia caja; el supervisor puede consultar todas las cajas y gestionar exportación, auditoría y configuración.
+
+## Abrir caja
+
+El vendedor y el supervisor pueden abrir una caja asignada. El saldo inicial se introduce como importe con coma decimal y hasta dos decimales (por ejemplo, `1.234,50`); el punto se usa únicamente para agrupar miles. Un valor como `12.5` no es válido. El saldo puede ser cero, pero no negativo. Solo se permite una caja abierta por usuario.

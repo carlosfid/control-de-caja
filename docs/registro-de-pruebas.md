@@ -19,3 +19,7 @@ Verificar:
 - La siembra no duplica usuarios al ejecutarse varias veces.
 - Los registros de auditoría existen en login correcto y fallido.
 - La matriz acción × rol coincide con el documento de permisos.
+
+## E2 — Apertura de caja
+
+Las pruebas automáticas cubren parseo y formato de importes, saldo inicial cero y valores inválidos, rol sin permiso, apertura concurrente, auditoría y persistencia de la sesión tras cerrar y reabrir la base local.

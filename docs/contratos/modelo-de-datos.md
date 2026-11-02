@@ -28,6 +28,7 @@
 `id`, `userId`, `registerId`, `currency`, `openedAt`, `openingBalanceMinor`, `status`, `closedAt`, `countedBalanceMinor`, `expectedBalanceMinor`, `varianceMinor`, `varianceNote`, `closedByUserId`, `denominationBreakdown`, `syncStatus`.
 
 Los estados de `status` son `open` y `closed`. Los campos opcionales finales usan `null`.
+Al crear una sesión, los campos de cierre permanecen en `null`; sin servidor configurado su `syncStatus` inicial es `local`.
 
 ## Movement
 
