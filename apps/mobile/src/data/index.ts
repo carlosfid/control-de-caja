@@ -12,3 +12,4 @@ export * from './repositories/movement-repository';
 export { loadDemoData as loadDemoMovementData } from './demo-data';
 export * from './id';
 export * from './clock';
+export * from './outbox';

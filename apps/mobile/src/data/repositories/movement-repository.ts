@@ -14,6 +14,7 @@ import {
 import type { CajaDatabase } from '../db';
 import { writeAudit } from '../audit-log';
 import { createUuid } from '../id';
+import { enqueueOutbox, hasServerUrl } from '../outbox';
 
 export interface MovementRepository {
   add(user: User, session: CashSession, input: NewMovementInput, now?: string): Promise<Result<Movement>>;
@@ -26,7 +27,7 @@ export interface MovementRepository {
 export function createMovementRepository(db: CajaDatabase): MovementRepository {
   const repository: MovementRepository = {
     async add(user, session, input, now = new Date().toISOString()) {
-      return db.transaction('rw', db.movements, db.sessions, db.audit, async () => {
+      return db.transaction('rw', db.movements, db.sessions, db.outbox, db.settings, db.audit, async () => {
         const storedSession = await db.sessions.get(session.id);
         if (!storedSession || storedSession.status !== 'open') {
           return failure({ code: ERROR_CODES.SESSION_NOT_OPEN });
@@ -38,6 +39,7 @@ export function createMovementRepository(db: CajaDatabase): MovementRepository {
         const definition = getMovementTypeDef(input.type);
         if (!definition) return failure({ code: ERROR_CODES.MOVEMENT_TYPE_INVALID });
 
+        const syncStatus = (await hasServerUrl(db)) ? 'pending' : 'local';
         const movement: Movement = {
           id: createUuid(),
           sessionId: storedSession.id,
@@ -55,10 +57,11 @@ export function createMovementRepository(db: CajaDatabase): MovementRepository {
           reversalOf: null,
           reversedBy: null,
           reversalReason: null,
-          syncStatus: 'local',
+          syncStatus,
         };
 
         await db.movements.add(movement);
+        if (syncStatus === 'pending') await enqueueOutbox(db, 'movement', movement.id, 'create', now);
         await writeAudit(db, {
           at: now,
           userId: user.id,

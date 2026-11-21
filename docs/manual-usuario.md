@@ -28,6 +28,10 @@ Desde una caja abierta, el vendedor o supervisor puede registrar ingresos y egre
 
 Los movimientos se consideran registros; una corrección posterior se realiza mediante una operación inversa y no modifica el movimiento original.
 
+## Trabajar sin conexión
+
+La aplicación conserva aperturas, movimientos y cierres aunque no haya servidor disponible. Los registros aparecen como locales o pendientes de sincronización según la configuración. Al recuperar la conexión, se pueden sincronizar; un registro rechazado no vuelve a intentarse automáticamente.
+
 ## Contar y cerrar la caja
 
 Al cerrar, el sistema recalcula el saldo esperado desde los movimientos guardados y lo compara con el efectivo contado. Si existe diferencia, se exige una nota de al menos 3 caracteres. El resultado puede quedar cuadrado, con faltante o con sobrante. Una caja cerrada no admite nuevos movimientos ni puede cerrarse nuevamente.

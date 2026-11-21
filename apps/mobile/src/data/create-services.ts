@@ -6,6 +6,7 @@ import { createSessionRepository } from './repositories/session-repository';
 import { createSettingsRepository } from './repositories/settings-repository';
 import { createUserRepository } from './repositories/user-repository';
 import { loadDemoData } from './seed';
+import { createOutboxRepository } from '../sync/outbox-repository';
 
 export interface Services {
   users: ReturnType<typeof createUserRepository>;
@@ -14,6 +15,7 @@ export interface Services {
   registers: ReturnType<typeof createRegisterRepository>;
   sessions: ReturnType<typeof createSessionRepository>;
   movements: ReturnType<typeof createMovementRepository>;
+  outbox: ReturnType<typeof createOutboxRepository>;
 }
 
 export async function createServices(db: CajaDatabase = database): Promise<Services> {
@@ -28,5 +30,6 @@ export async function createServices(db: CajaDatabase = database): Promise<Servi
     registers: createRegisterRepository(db),
     sessions: createSessionRepository(db),
     movements: createMovementRepository(db),
+    outbox: createOutboxRepository(db),
   };
 }

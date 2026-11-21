@@ -31,6 +31,11 @@ export class CajaDatabase extends Dexie {
       audit: 'id, action, [entityType+entityId], at',
       settings: '&key',
     });
+    this.version(2).stores({
+      sessions: 'id, userId, status, syncStatus',
+      movements: 'id, sessionId, [sessionId+createdAt], syncStatus',
+      outbox: 'id, status, sequence, operation, entityType, entityId',
+    });
   }
 }
 

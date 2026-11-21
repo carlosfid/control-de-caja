@@ -7,4 +7,5 @@ export * from './movement-types';
 export * from './permissions';
 export * from './rules';
 export * from './seed';
+export * from './sync';
 export { success, failure } from './result';

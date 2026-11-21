@@ -12,6 +12,7 @@ import {
 } from '@caja/domain';
 import type { CajaDatabase } from '../db';
 import { writeAudit } from '../audit-log';
+import { enqueueOutbox, hasServerUrl } from '../outbox';
 
 export interface SessionRepository {
   openSession(user: User, openingBalanceMinor: number, now?: string): Promise<Result<CashSession>>;
@@ -28,7 +29,7 @@ export function createSessionRepository(db: CajaDatabase): SessionRepository {
   const repository: SessionRepository = {
     async openSession(user, openingBalanceMinor, now = new Date().toISOString()) {
       const sessionId = crypto.randomUUID();
-      return db.transaction('rw', db.sessions, db.audit, async () => {
+      return db.transaction('rw', db.sessions, db.outbox, db.settings, db.audit, async () => {
         const existing = await db.sessions
           .where('userId')
           .equals(user.id)
@@ -37,6 +38,7 @@ export function createSessionRepository(db: CajaDatabase): SessionRepository {
         const validation = validateOpenSession(user, openingBalanceMinor, existing ?? null, now);
         if (!validation.ok) return validation;
 
+        const syncStatus = (await hasServerUrl(db)) ? 'pending' : 'local';
         const session: CashSession = {
           id: sessionId,
           userId: user.id,
@@ -52,9 +54,10 @@ export function createSessionRepository(db: CajaDatabase): SessionRepository {
           varianceNote: null,
           closedByUserId: null,
           denominationBreakdown: null,
-          syncStatus: 'local',
+          syncStatus,
         };
         await db.sessions.add(session);
+        if (syncStatus === 'pending') await enqueueOutbox(db, 'session', session.id, 'create', now);
         await writeAudit(db, {
           id: crypto.randomUUID(),
           at: now,
@@ -111,7 +114,7 @@ export function createSessionRepository(db: CajaDatabase): SessionRepository {
     },
 
     async closeSession(user, sessionId, countedMinor, note, denominationBreakdown = null, now = new Date().toISOString()) {
-      return db.transaction('rw', db.sessions, db.movements, db.audit, async () => {
+      return db.transaction('rw', db.sessions, db.movements, db.outbox, db.settings, db.audit, async () => {
         const stored = await db.sessions.get(sessionId);
         if (!stored) return failure({ code: ERROR_CODES.SESSION_NOT_FOUND });
         if (stored.status === 'closed') return failure({ code: ERROR_CODES.SESSION_ALREADY_CLOSED });
@@ -136,6 +139,10 @@ export function createSessionRepository(db: CajaDatabase): SessionRepository {
           closedByUserId: user.id,
           denominationBreakdown,
         };
+        if (await hasServerUrl(db)) {
+          closed.syncStatus = 'pending';
+          await enqueueOutbox(db, 'session', closed.id, 'close', now);
+        }
         await db.sessions.put(closed);
         await writeAudit(db, {
           at: now,

@@ -38,3 +38,11 @@ Las pruebas automáticas cubren parseo y formato de importes, saldo inicial cero
 | 2026-11-21 | E4 | 0.4.0 | Conteo cuadrado, faltante y sobrante | Aprobado | Suite móvil stage4 y reglas de dominio | La diferencia exige nota. |
 | 2026-11-21 | E4 | 0.4.0 | Doble cierre y movimiento posterior | Aprobado | Suite móvil stage4 | Una caja cerrada queda bloqueada. |
 | 2026-11-21 | E4 | 0.4.0 | Esperado recalculado desde movimientos | Aprobado | Suite móvil stage4 | Un valor esperado manipulado no se acepta. |
+
+## E5 — Offline real y estados visibles
+
+| Fecha | Etapa | Versión | Prueba | Resultado | Evidencia | Observaciones |
+|---|---|---|---|---|---|---|
+| 2026-11-21 | E5 | 0.5.0 | Cola offline y retroencolado | Aprobado | Suite móvil stage5 | Cinco movimientos locales pasan a pendiente al configurar el servidor. |
+| 2026-11-21 | E5 | 0.5.0 | Escritura transaccional y reintento | Aprobado | Suite móvil stage5 | Solo `error` puede pasar a `pending` mediante reintento. |
+| 2026-11-21 | E5 | 0.5.0 | Transiciones de sincronización | Aprobado | 36 pruebas de dominio | Estados finales y recuperaciones permiten la tabla definida. |
