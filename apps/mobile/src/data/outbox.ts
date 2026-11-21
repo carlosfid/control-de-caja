@@ -53,7 +53,7 @@ export async function enqueueLocalRecords(db: CajaDatabase, now: string): Promis
   let count = 0;
 
   for (const session of sessions) {
-    await enqueueOutbox(db, 'session', session.id, 'create', now);
+    await enqueueOutbox(db, 'session', session.id, session.status === 'closed' ? 'close' : 'create', now);
     await db.sessions.put({ ...session, syncStatus: 'pending' });
     count += 1;
   }

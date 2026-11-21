@@ -2,6 +2,24 @@ import type { CajaDatabase } from './db';
 import { createSessionRepository } from './repositories/session-repository';
 import { createMovementRepository } from './repositories/movement-repository';
 
+export async function loadDemoScenario(db: CajaDatabase): Promise<void> {
+  await loadDemoData(db);
+
+  const user = await db.users.get('user-cashier-ana');
+  if (!user) return;
+  const { pinHash: _pinHash, pinSalt: _pinSalt, ...demoUser } = user;
+  const session = await createSessionRepository(db).getOpenForUser(demoUser.id);
+  if (!session) return;
+
+  await createMovementRepository(db).add(demoUser, session, {
+    type: 'sale',
+    amountMinor: 20_000_000,
+    currency: 'CUP',
+    description: 'Venta de demostración sobre el límite',
+    occurredAt: '2026-11-21T15:00:00Z',
+  }, '2026-11-21T15:30:00Z');
+}
+
 export async function loadDemoData(db: CajaDatabase): Promise<void> {
   if (await db.movements.count() > 0) return;
 

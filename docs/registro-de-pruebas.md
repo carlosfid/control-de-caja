@@ -62,3 +62,12 @@ Las pruebas automáticas cubren parseo y formato de importes, saldo inicial cero
 | 2026-11-21 | E7 | 0.7.0 | Anulación feliz y prohibiciones | Aprobado | 118 pruebas dominio y 31 pruebas móviles | Incluye sesión cerrada, motivo corto y doble anulación. |
 | 2026-11-21 | E7 | 0.7.0 | CSV, catálogo ampliado y auditoría | Aprobado | Pruebas dominio y repositorios móviles | CSV con BOM y separador decimal/coma. |
 | 2026-11-21 | E7 | 0.7.0 | Tipos, reversión y transferencias servidor | Aprobado | Servicio servidor actualizado | Transferencias sin pareja visibles en estado demo. |
+
+## E8 — Pulido y entrega
+
+| Fecha | Etapa | Versión | Prueba | Resultado | Evidencia | Observaciones |
+|---|---|---|---|---|---|---|
+| 2026-11-21 | E8 | 0.8.0 | Flujo extremo a extremo sin interfaz | Aprobado | Suite full-flow | Apertura, offline, cierre, reconexión y sincronización. |
+| 2026-11-21 | E8 | 0.8.0 | Prueba de carga de 1.000 movimientos | Aprobado | Suite full-flow | Los registros se mantienen en Dexie. |
+| 2026-11-21 | E8 | 0.8.0 | Reset, exportación y escenario demo | Aprobado | Suite stage8 | El volcado excluye PIN, sales y bloqueos. |
+| 2026-11-21 | E8 | 0.8.0 | Compilación y suites completas | Aprobado | Build y npm test | Validación de dominio, móvil y servidor. |

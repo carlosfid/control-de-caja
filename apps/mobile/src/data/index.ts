@@ -13,3 +13,5 @@ export { loadDemoData as loadDemoMovementData } from './demo-data';
 export * from './id';
 export * from './clock';
 export * from './outbox';
+export { resetLocalData } from './reset';
+export * from './export-db';
