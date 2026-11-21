@@ -6,6 +6,7 @@ export * from './balance-rules';
 export * from './closing-rules';
 export * from './denomination-rules';
 export * from './session-report';
+export * from './reversal-rules';
 
 export function calculateExpectedBalance(session: CashSession, movements: Movement[]): number {
   return movements.reduce(

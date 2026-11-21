@@ -32,6 +32,10 @@ Los movimientos se consideran registros; una corrección posterior se realiza me
 
 La aplicación conserva aperturas, movimientos y cierres aunque no haya servidor disponible. Los registros aparecen como locales o pendientes de sincronización según la configuración. Al recuperar la conexión, se pueden sincronizar; un registro rechazado no vuelve a intentarse automáticamente.
 
+## Pagos, transferencias, anulaciones, auditoría y exportación
+
+Los pagos requieren contraparte y referencia. Las transferencias identifican la caja de contraparte y el código de referencia. Las anulaciones generan un movimiento inverso en la misma sesión abierta y no modifican el movimiento original. Los movimientos anulados no pueden anularse otra vez. Los registros de auditoría permiten consultar usuario, acción y fechas; el informe de sesión puede exportarse como CSV.
+
 ## Sincronización y errores
 
 Los registros locales pasan por estados pendientes, enviándose, aceptados, rechazados o con error. Un rechazo del servidor requiere revisar el motivo y no se reintenta automáticamente. Los fallos temporales de red siguen una espera creciente y pueden reintentarse manualmente.

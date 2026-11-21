@@ -33,7 +33,9 @@ export class SyncService {
     const duplicates = this.database.db.prepare("SELECT COUNT(*) AS count FROM sync_log WHERE result = 'duplicate'").get() as { count: number };
     const rejected = this.database.db.prepare("SELECT COUNT(*) AS count FROM sync_log WHERE result = 'rejected'").get() as { count: number };
     const latest = this.database.db.prepare('SELECT * FROM sync_log ORDER BY receivedAt DESC LIMIT 50').all();
-    return { total: total.count, accepted: accepted.count, duplicates: duplicates.count, rejected: rejected.count, latest, config: this.getConfig() };
+    const transfers = this.database.db.prepare("SELECT * FROM movements WHERE type IN ('transfer_out', 'transfer_in')").all() as Array<{ id: string; type: string; reference: string | null; amountMinor: number }>;
+    const unmatchedTransfers = transfers.filter((transfer) => !transfers.some((counterpart) => counterpart.id !== transfer.id && counterpart.reference === transfer.reference && counterpart.type !== transfer.type));
+    return { total: total.count, accepted: accepted.count, duplicates: duplicates.count, rejected: rejected.count, latest, unmatchedTransfers, config: this.getConfig() };
   }
 
   process(request: SyncRequest, now = new Date().toISOString()): SyncResponse {
@@ -95,6 +97,10 @@ export class SyncService {
             status = 'rejected'; reason = 'SESSION_NOT_FOUND';
           } else if (session.status === 'closed') {
             status = 'rejected'; reason = 'SESSION_CLOSED_SERVER';
+          } else if (typeof payload.reversalOf === 'string' && !this.database.db.prepare('SELECT id FROM movements WHERE id = ?').get(payload.reversalOf)) {
+            status = 'rejected'; reason = 'REVERSAL_TARGET_UNKNOWN';
+          } else if (!['sale', 'collection', 'other_income', 'refund', 'operating_expense', 'salary_payment', 'other_expense', 'payment', 'transfer_out', 'transfer_in', 'reversal'].includes(String(payload.type))) {
+            status = 'rejected'; reason = 'INVALID_TYPE';
           } else if (amountMinor > this.config.amountLimitMinor) {
             status = 'rejected'; reason = 'AMOUNT_OVER_LIMIT';
           } else if (this.config.forcedRejectCount > 0) {

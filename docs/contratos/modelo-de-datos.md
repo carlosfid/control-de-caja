@@ -34,6 +34,8 @@ Al crear una sesión, los campos de cierre permanecen en `null`; sin servidor co
 
 `id`, `sessionId`, `userId`, `type`, `direction`, `amountMinor`, `currency`, `description`, `occurredAt`, `createdAt`, `reference`, `counterparty`, `counterpartyRegisterId`, `reversalOf`, `reversedBy`, `reversalReason`, `syncStatus`. La dirección se deriva del tipo y se almacena para consultas.
 
+Tipos E7: `payment`, `transfer_out`, `transfer_in` y `reversal`. `reversal` guarda `reversalOf`, `reversalReason` y marca el movimiento original mediante `reversedBy`.
+
 ## OutboxEntry
 
 `id`, `sequence`, `entityType`, `entityId`, `operation`, `status`, `attempts`, `lastAttemptAt`, `nextAttemptAt`, `lastError`, `serverResult`, `createdAt`, `updatedAt`.

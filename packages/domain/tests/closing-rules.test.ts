@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildSession, buildUser } from '../src/testing/builders';
-import { buildSessionReport, computeVariance, validateClose, totalFromDenominations } from '../src';
+import { buildSessionReport, computeVariance, sessionCsv, validateClose, totalFromDenominations } from '../src';
 import type { Movement } from '../src';
 
 describe('E4 closing rules', () => {
@@ -31,6 +31,15 @@ describe('E4 closing rules', () => {
       countedBalanceMinor: 13000, varianceMinor: 1000, responsibleUserId: 'user-cashier-ana',
       byType: { sale: 1 },
     });
+  });
+
+  it('exports CSV with BOM, semicolon, decimal comma and escaped text', () => {
+    const session = buildSession({ varianceNote: 'Diferencia; "Caja A" — Ñandú' });
+    const report = buildSessionReport(session, []);
+    const csv = sessionCsv(report);
+    expect(csv.startsWith('\ufeff')).toBe(true);
+    expect(csv).toContain('Diferencia; ""Caja A"" — Ñandú');
+    expect(csv).toContain(';0,00;');
   });
 
   it('totals denominations and rejects invalid counts', () => {

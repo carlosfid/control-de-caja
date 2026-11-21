@@ -36,6 +36,17 @@ export class CajaDatabase extends Dexie {
       movements: 'id, sessionId, [sessionId+createdAt], syncStatus',
       outbox: 'id, status, sequence, operation, entityType, entityId',
     });
+    this.version(3).stores({
+      movements: 'id, sessionId, [sessionId+createdAt], syncStatus, reversalOf, counterparty, counterpartyRegisterId',
+    }).upgrade((transaction) => {
+      return transaction.table('movements').toCollection().modify((movement) => {
+        if (movement.reversalOf === undefined) movement.reversalOf = null;
+        if (movement.reversedBy === undefined) movement.reversedBy = null;
+        if (movement.reversalReason === undefined) movement.reversalReason = null;
+        if (movement.counterparty === undefined) movement.counterparty = null;
+        if (movement.counterpartyRegisterId === undefined) movement.counterpartyRegisterId = null;
+      });
+    });
   }
 }
 

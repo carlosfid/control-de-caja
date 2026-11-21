@@ -54,3 +54,11 @@ Las pruebas automáticas cubren parseo y formato de importes, saldo inicial cero
 | 2026-11-21 | E6 | 0.6.0 | Idempotencia, autenticación y límites | Aprobado | Suite servidor sync | Un recordId duplicado conserva el resultado original. |
 | 2026-11-21 | E6 | 0.6.0 | Motor, backoff y recuperación | Aprobado | Suite móvil stage6 | El motor usa lotes de hasta 20 registros. |
 | 2026-11-21 | E6 | 0.6.0 | Panel y controles demo | Aprobado | Suite servidor demo | La interfaz muestra la simulación y los últimos registros. |
+
+## E7 — Ampliación funcional
+
+| Fecha | Etapa | Versión | Prueba | Resultado | Evidencia | Observaciones |
+|---|---|---|---|---|---|---|
+| 2026-11-21 | E7 | 0.7.0 | Anulación feliz y prohibiciones | Aprobado | 118 pruebas dominio y 31 pruebas móviles | Incluye sesión cerrada, motivo corto y doble anulación. |
+| 2026-11-21 | E7 | 0.7.0 | CSV, catálogo ampliado y auditoría | Aprobado | Pruebas dominio y repositorios móviles | CSV con BOM y separador decimal/coma. |
+| 2026-11-21 | E7 | 0.7.0 | Tipos, reversión y transferencias servidor | Aprobado | Servicio servidor actualizado | Transferencias sin pareja visibles en estado demo. |
