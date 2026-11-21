@@ -30,3 +30,11 @@ Las pruebas automáticas cubren parseo y formato de importes, saldo inicial cero
 |---|---|---|---|---|---|---|
 | 2026-11-21 | E3 | 0.3.0 | Catálogo, validación múltiple y resumen de sesión | Aprobado | 74 pruebas del dominio, incluidas 4 nuevas de E3 | Todos los movimientos locales deben incluirse en el cálculo del esperado. |
 | 2026-11-21 | E3 | 0.3.0 | Persistencia, auditoría y suscripción de movimientos | Aprobado | 15 pruebas móviles, incluidas 4 nuevas de E3 | `movement_created` se escribe dentro de la transacción del movimiento. |
+
+## E4 — Conteo y cierre
+
+| Fecha | Etapa | Versión | Prueba | Resultado | Evidencia | Observaciones |
+|---|---|---|---|---|---|---|
+| 2026-11-21 | E4 | 0.4.0 | Conteo cuadrado, faltante y sobrante | Aprobado | Suite móvil stage4 y reglas de dominio | La diferencia exige nota. |
+| 2026-11-21 | E4 | 0.4.0 | Doble cierre y movimiento posterior | Aprobado | Suite móvil stage4 | Una caja cerrada queda bloqueada. |
+| 2026-11-21 | E4 | 0.4.0 | Esperado recalculado desde movimientos | Aprobado | Suite móvil stage4 | Un valor esperado manipulado no se acepta. |

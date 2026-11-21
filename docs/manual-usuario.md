@@ -27,3 +27,7 @@ El vendedor y el supervisor pueden abrir una caja asignada. El saldo inicial se 
 Desde una caja abierta, el vendedor o supervisor puede registrar ingresos y egresos según el tipo permitido. El vendedor no puede registrar pagos de salario. La descripción debe tener entre 3 y 140 caracteres, el importe debe ser positivo y la fecha no puede ser anterior a la apertura ni futura. El saldo esperado combina el saldo inicial con todos los movimientos registrados, incluso mientras estén pendientes de sincronizar.
 
 Los movimientos se consideran registros; una corrección posterior se realiza mediante una operación inversa y no modifica el movimiento original.
+
+## Contar y cerrar la caja
+
+Al cerrar, el sistema recalcula el saldo esperado desde los movimientos guardados y lo compara con el efectivo contado. Si existe diferencia, se exige una nota de al menos 3 caracteres. El resultado puede quedar cuadrado, con faltante o con sobrante. Una caja cerrada no admite nuevos movimientos ni puede cerrarse nuevamente.

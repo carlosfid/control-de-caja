@@ -2,7 +2,9 @@ import { liveQuery } from 'dexie';
 import {
   ERROR_CODES,
   failure,
+  computeVariance,
   success,
+  validateClose,
   validateOpenSession,
   type CashSession,
   type Result,
@@ -15,11 +17,11 @@ export interface SessionRepository {
   openSession(user: User, openingBalanceMinor: number, now?: string): Promise<Result<CashSession>>;
   getOpenForUser(userId: string): Promise<CashSession | null>;
   getById(id: string): Promise<CashSession | null>;
-  listByUser(userId: string): Promise<CashSession[]>;
-  listAll(): Promise<CashSession[]>;
+  listByUser(userId: string, status?: 'open' | 'closed'): Promise<CashSession[]>;
+  listAll(status?: 'open' | 'closed'): Promise<CashSession[]>;
   watchOpenForUser(userId: string, callback: (session: CashSession | null) => void): () => void;
   watchAll(callback: (sessions: CashSession[]) => void): () => void;
-  closeSession(): Promise<Result<CashSession>>;
+  closeSession(user: User, sessionId: string, countedMinor: number, note: string | null, denominationBreakdown?: Record<string, number> | null, now?: string): Promise<Result<CashSession>>;
 }
 
 export function createSessionRepository(db: CajaDatabase): SessionRepository {
@@ -78,13 +80,17 @@ export function createSessionRepository(db: CajaDatabase): SessionRepository {
       return (await db.sessions.get(id)) ?? null;
     },
 
-    async listByUser(userId) {
-      return (await db.sessions.where('userId').equals(userId).toArray())
+    async listByUser(userId, status) {
+      const sessions = await db.sessions.where('userId').equals(userId).toArray();
+      return sessions
+        .filter((session) => status === undefined || session.status === status)
         .sort((left, right) => right.openedAt.localeCompare(left.openedAt));
     },
 
-    async listAll() {
-      return (await db.sessions.toArray())
+    async listAll(status) {
+      const sessions = await db.sessions.toArray();
+      return sessions
+        .filter((session) => status === undefined || session.status === status)
         .sort((left, right) => right.openedAt.localeCompare(left.openedAt));
     },
 
@@ -104,10 +110,42 @@ export function createSessionRepository(db: CajaDatabase): SessionRepository {
       return () => subscription.unsubscribe();
     },
 
-    async closeSession() {
-      return failure({
-        code: ERROR_CODES.UNEXPECTED,
-        params: { reason: 'SESSION_CLOSE_NOT_AVAILABLE_UNTIL_E4' },
+    async closeSession(user, sessionId, countedMinor, note, denominationBreakdown = null, now = new Date().toISOString()) {
+      return db.transaction('rw', db.sessions, db.movements, db.audit, async () => {
+        const stored = await db.sessions.get(sessionId);
+        if (!stored) return failure({ code: ERROR_CODES.SESSION_NOT_FOUND });
+        if (stored.status === 'closed') return failure({ code: ERROR_CODES.SESSION_ALREADY_CLOSED });
+
+        const movements = await db.movements.where('sessionId').equals(sessionId).toArray();
+        const incomeMinor = movements.reduce((total, movement) => total + (movement.direction === 'in' ? movement.amountMinor : 0), 0);
+        const expenseMinor = movements.reduce((total, movement) => total + (movement.direction === 'out' ? movement.amountMinor : 0), 0);
+        const expectedMinor = stored.openingBalanceMinor + incomeMinor - expenseMinor;
+        const validation = validateClose(user, { ...stored, expectedBalanceMinor: expectedMinor }, countedMinor, note, now);
+        if (!validation.ok) return validation;
+
+        const variance = computeVariance(expectedMinor, countedMinor);
+
+        const closed: CashSession = {
+          ...stored,
+          status: 'closed',
+          closedAt: now,
+          countedBalanceMinor: countedMinor,
+          expectedBalanceMinor: expectedMinor,
+          varianceMinor: variance.varianceMinor,
+          varianceNote: note,
+          closedByUserId: user.id,
+          denominationBreakdown,
+        };
+        await db.sessions.put(closed);
+        await writeAudit(db, {
+          at: now,
+          userId: user.id,
+          action: 'session_closed',
+          entityType: 'session',
+          entityId: closed.id,
+          details: { expectedBalanceMinor: expectedMinor, countedBalanceMinor: countedMinor, varianceMinor: variance.varianceMinor },
+        });
+        return success(closed);
       });
     },
   };

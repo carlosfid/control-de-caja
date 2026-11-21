@@ -94,12 +94,14 @@ describe('Stage 2 cash sessions', () => {
     await db.delete();
   });
 
-  it('keeps session close unavailable until Stage 4', async () => {
+  it('returns session not found when closing an unknown session in Stage 4', async () => {
     const db = newDb();
+    const services = await createServices(db);
+    const cashier = (await services.users.getById('user-cashier-ana'))!;
     const repository = createSessionRepository(db);
-    expect(await repository.closeSession()).toMatchObject({
+    expect(await repository.closeSession(cashier, 'missing-session', 0, null)).toMatchObject({
       ok: false,
-      errors: [{ code: 'UNEXPECTED' }],
+      errors: [{ code: 'SESSION_NOT_FOUND' }],
     });
     await db.delete();
   });
