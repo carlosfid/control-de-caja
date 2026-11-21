@@ -46,3 +46,11 @@ Las pruebas automáticas cubren parseo y formato de importes, saldo inicial cero
 | 2026-11-21 | E5 | 0.5.0 | Cola offline y retroencolado | Aprobado | Suite móvil stage5 | Cinco movimientos locales pasan a pendiente al configurar el servidor. |
 | 2026-11-21 | E5 | 0.5.0 | Escritura transaccional y reintento | Aprobado | Suite móvil stage5 | Solo `error` puede pasar a `pending` mediante reintento. |
 | 2026-11-21 | E5 | 0.5.0 | Transiciones de sincronización | Aprobado | 36 pruebas de dominio | Estados finales y recuperaciones permiten la tabla definida. |
+
+## E6 — Sincronización con el servidor simulado
+
+| Fecha | Etapa | Versión | Prueba | Resultado | Evidencia | Observaciones |
+|---|---|---|---|---|---|---|
+| 2026-11-21 | E6 | 0.6.0 | Idempotencia, autenticación y límites | Aprobado | Suite servidor sync | Un recordId duplicado conserva el resultado original. |
+| 2026-11-21 | E6 | 0.6.0 | Motor, backoff y recuperación | Aprobado | Suite móvil stage6 | El motor usa lotes de hasta 20 registros. |
+| 2026-11-21 | E6 | 0.6.0 | Panel y controles demo | Aprobado | Suite servidor demo | La interfaz muestra la simulación y los últimos registros. |

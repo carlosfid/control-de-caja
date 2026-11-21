@@ -8,4 +8,5 @@ export * from './permissions';
 export * from './rules';
 export * from './seed';
 export * from './sync';
+export * from './sync-contract';
 export { success, failure } from './result';

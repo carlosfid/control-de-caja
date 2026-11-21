@@ -32,6 +32,10 @@ Los movimientos se consideran registros; una corrección posterior se realiza me
 
 La aplicación conserva aperturas, movimientos y cierres aunque no haya servidor disponible. Los registros aparecen como locales o pendientes de sincronización según la configuración. Al recuperar la conexión, se pueden sincronizar; un registro rechazado no vuelve a intentarse automáticamente.
 
+## Sincronización y errores
+
+Los registros locales pasan por estados pendientes, enviándose, aceptados, rechazados o con error. Un rechazo del servidor requiere revisar el motivo y no se reintenta automáticamente. Los fallos temporales de red siguen una espera creciente y pueden reintentarse manualmente.
+
 ## Contar y cerrar la caja
 
 Al cerrar, el sistema recalcula el saldo esperado desde los movimientos guardados y lo compara con el efectivo contado. Si existe diferencia, se exige una nota de al menos 3 caracteres. El resultado puede quedar cuadrado, con faltante o con sobrante. Una caja cerrada no admite nuevos movimientos ni puede cerrarse nuevamente.
