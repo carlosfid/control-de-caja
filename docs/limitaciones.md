@@ -13,4 +13,5 @@
 - Los secretos, certificados y variables de producción no deben añadirse al repositorio.
 - CORS está abierto para la demostración y debe restringirse antes de desplegarlo fuera de red local.
 - Toda entrada se valida en el servidor, pero la seguridad de producción requiere HTTPS, rate limiting y gestión segura de secretos.
+- Los controles `/demo/*` están diseñados para escenarios de demostración y no deben exponerse como controles administrativos de producción.
 - Los registros de soporte no deben incluir PIN, hashes, sales o tokens, salvo que exista un proceso autorizado de diagnóstico.

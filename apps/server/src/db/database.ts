@@ -64,13 +64,27 @@ export class ServerDatabase {
         userId TEXT,
         receivedAt TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS sync_attempts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        recordId TEXT NOT NULL,
+        kind TEXT NOT NULL,
+        operation TEXT NOT NULL,
+        result TEXT NOT NULL,
+        reason TEXT,
+        deviceId TEXT NOT NULL,
+        userId TEXT,
+        receivedAt TEXT NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS sync_attempts_receivedAt ON sync_attempts(receivedAt);
       CREATE TABLE IF NOT EXISTS config (
         key TEXT PRIMARY KEY,
         value TEXT NOT NULL
       );
     `);
 
-    const insertUser = this.db.prepare('INSERT OR IGNORE INTO users (id, name, role, registerId, avatarColor) VALUES (?, ?, ?, ?, ?)');
+    const insertUser = this.db.prepare(
+      'INSERT OR IGNORE INTO users (id, name, role, registerId, avatarColor) VALUES (?, ?, ?, ?, ?)',
+    );
     const demoUsers = [
       ['user-cashier-ana', 'Ana', 'cashier', 'reg-01', '#2563eb'],
       ['user-supervisor-luis', 'Luis', 'supervisor', 'reg-01', '#16a34a'],
